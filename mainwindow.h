@@ -143,7 +143,12 @@ class MainWindow : public Gtk::Window {
 		Gtk::Button yellow_penalty_but;
 		Gtk::Button yellow_indirect_freekick_but;
 		Gtk::Button yellow_yellowcard_but;
-		Gtk::Button yellow_redcard_but;
+        Gtk::Button yellow_redcard_but;
+        Gtk::Label yellow_ball_x_label;
+        Gtk::Label yellow_ball_y_label;
+        Gtk::Button yellow_ballplacement_but;
+        Gtk::SpinButton yellow_ball_x_spin;
+        Gtk::SpinButton yellow_ball_y_spin;
 
 		Gtk::Frame blue_frame;
 		Gtk::Table blue_team_table;
@@ -160,6 +165,11 @@ class MainWindow : public Gtk::Window {
 		Gtk::Button blue_indirect_freekick_but;
 		Gtk::Button blue_yellowcard_but;
 		Gtk::Button blue_redcard_but;
+        Gtk::Label blue_ball_x_label;
+        Gtk::Label blue_ball_y_label;
+		Gtk::Button blue_ballplacement_but;
+	    Gtk::SpinButton blue_ball_x_spin;
+	    Gtk::SpinButton blue_ball_y_spin;
 };
 
 #endif
