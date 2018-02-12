@@ -13,3 +13,5 @@ savestate.pb.cc
 savestate.pb.h
 sslrefbox
 tags
+.idea/*
+cmake-build-debug/*
