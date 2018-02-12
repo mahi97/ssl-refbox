@@ -153,6 +153,7 @@ MainWindow::MainWindow(GameController &controller) :
 		yellow_freekick_but(u8"Direct (KP_7)"),
 		yellow_penalty_but(u8"Penalty"),
 		yellow_indirect_freekick_but(u8"Indirect (KP_4)"),
+        yellow_ballplacement_but(u8"Ball Placement"),
 
 		blue_frame(u8"Blue Team"),
 		blue_team_table(7, 2),
@@ -162,7 +163,11 @@ MainWindow::MainWindow(GameController &controller) :
 		blue_kickoff_but(u8"Kickoff (KP_3)"),
 		blue_freekick_but(u8"Direct (KP_9)"),
 		blue_penalty_but(u8"Penalty"),
-		blue_indirect_freekick_but(u8"Indirect (KP_6)") {
+		blue_indirect_freekick_but(u8"Indirect (KP_6)"),
+        blue_ballplacement_but(u8"Ball Placement"),
+
+        ball_x_label(u8"BallPlacement X: "),
+        ball_y_label(u8"BallPlacement Y: ") {
 	set_default_size(600, 700);
 	set_title(u8"Small Size League - Referee Box");
 
@@ -210,6 +215,7 @@ MainWindow::MainWindow(GameController &controller) :
 	yellow_indirect_freekick_but.set_tooltip_text(u8"Execute yellow indirect free kick or throw-in");
 	yellow_yellowcard_but.set_tooltip_text(u8"Show yellow card to yellow");
 	yellow_redcard_but.set_tooltip_text(u8"Show red card to yellow");
+    yellow_ballplacement_but.set_tooltip_text(u8"Execute yellow ball placement");
 	blue_goalie_spin.set_tooltip_text(u8"Robot number of blue goalie");
 	blue_kickoff_but.set_tooltip_text(u8"Prepare for blue kickoff");
 	blue_freekick_but.set_tooltip_text(u8"Execute blue direct free kick, corner kick, or goal kick");
@@ -217,11 +223,16 @@ MainWindow::MainWindow(GameController &controller) :
 	blue_indirect_freekick_but.set_tooltip_text(u8"Execute blue indirect free kick or throw-in");
 	blue_yellowcard_but.set_tooltip_text(u8"Show yellow card to blue");
 	blue_redcard_but.set_tooltip_text(u8"Show red card to blue");
-
+    blue_ballplacement_but.set_tooltip_text(u8"Execute blue ball placement");
 	// Goalie fields should not be editable because if the user types a number on the numpad, it will be treated as an accelerator for a command instead
 	// This does not change the visual style, but it rejects all keyboard edits, so users will learn not to use the keyboard and will not accidentally hit a command key
 	yellow_goalie_spin.set_editable(false);
 	blue_goalie_spin.set_editable(false);
+    ball_x_spin.set_tooltip_text(u8"Set x-position of ball placement");
+    ball_y_spin.set_tooltip_text(u8"Set y-position of ball placement");
+    ball_x_spin.set_editable(false);
+    ball_y_spin.set_editable(false);
+
 
 	// Menu
 	Gtk::Menu::MenuList &menulist = config_menu.items();
@@ -264,6 +275,8 @@ MainWindow::MainWindow(GameController &controller) :
 	blue_yellowcard_but.signal_clicked().connect(sigc::bind(sigc::mem_fun(controller, &GameController::yellow_card), SaveState::TEAM_BLUE));
 	blue_redcard_but.signal_clicked().connect(sigc::bind(sigc::mem_fun(controller, &GameController::red_card), SaveState::TEAM_BLUE));
 
+    // TODO : signal and slot ball placement
+
 	// Team frames
 	yellow_goalie_spin.get_adjustment()->configure(0, 0, 255, 1, 10, 0);
 	yellow_team_table.set_row_spacings(10);
@@ -281,6 +294,11 @@ MainWindow::MainWindow(GameController &controller) :
 	yellow_team_table.attach(yellow_penalty_but, 1, 2, 4, 5, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
 	yellow_team_table.attach(yellow_yellowcard_but, 1, 2, 5, 6, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
 	yellow_team_table.attach(yellow_redcard_but, 1, 2, 6, 7, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+	yellow_team_table.attach(yellow_ballplacement_but, 0, 2, 7, 8, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	yellow_team_table.attach(yellow_ball_x_label, 1, 2, 6, 7, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	yellow_team_table.attach(yellow_ball_x_spin, 1, 2, 6, 7, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	yellow_team_table.attach(yellow_ball_y_label, 1, 2, 6, 7, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	yellow_team_table.attach(yellow_ball_y_spin, 1, 2, 6, 7, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
 
 	yellow_frame.add(yellow_team_table);
 	yellow_frame.modify_bg(Gtk::STATE_NORMAL , Gdk::Color(u8"yellow"));
@@ -303,10 +321,14 @@ MainWindow::MainWindow(GameController &controller) :
 	blue_team_table.attach(blue_penalty_but, 1, 2, 4, 5, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
 	blue_team_table.attach(blue_yellowcard_but, 1, 2, 5, 6, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
 	blue_team_table.attach(blue_redcard_but, 1, 2, 6, 7, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+	blue_team_table.attach(blue_ballplacement_but, 0, 2, 7, 8, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	blue_team_table.attach(blue_ball_x_label, 1, 2, 7, 8, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	blue_team_table.attach(blue_ball_x_spin, 2, 3, 7, 8, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	blue_team_table.attach(blue_ball_y_label, 1, 2, 8, 9, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
+//	blue_team_table.attach(blue_ball_y_spin, 2, 3, 8, 9, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL);
 
 	blue_frame.add(blue_team_table);
 	blue_frame.modify_bg(Gtk::STATE_NORMAL , Gdk::Color(u8"blue"));
-
 	team_hbox.pack_start(blue_frame, Gtk::PACK_EXPAND_WIDGET, 20);
 
 	// Start stop
@@ -351,15 +373,15 @@ MainWindow::MainWindow(GameController &controller) :
 	goal_frame.add(goal_vbox);
 
 	game_control_box.set_homogeneous(true);
-	game_control_box.pack_start(cancel_but, Gtk::PACK_EXPAND_WIDGET, 10, 10);
+	game_control_box.pack_start(cancel_but, Gtk::PACK_EXPAND_WIDGET, 10);
 
 	yellow_goal_box.pack_start(yellow_goal_but, Gtk::PACK_EXPAND_WIDGET);
 	yellow_goal_box.pack_start(yellow_subgoal_but, Gtk::PACK_EXPAND_WIDGET);
 	blue_goal_box.pack_start(blue_goal_but, Gtk::PACK_EXPAND_WIDGET);
 	blue_goal_box.pack_start(blue_subgoal_but, Gtk::PACK_EXPAND_WIDGET);
 
-	game_control_box.pack_start(yellow_goal_box, Gtk::PACK_EXPAND_WIDGET, 10, 10);
-	game_control_box.pack_start(blue_goal_box, Gtk::PACK_EXPAND_WIDGET, 10, 10);
+	game_control_box.pack_start(yellow_goal_box, Gtk::PACK_EXPAND_WIDGET, 10);
+	game_control_box.pack_start(blue_goal_box, Gtk::PACK_EXPAND_WIDGET, 10);
 
 	game_stage_control_left_vbox.pack_start(next_stage_label_left, Gtk::PACK_SHRINK);
 	game_stage_control_right_vbox.pack_start(next_stage_label_right, Gtk::PACK_SHRINK);
@@ -381,12 +403,18 @@ MainWindow::MainWindow(GameController &controller) :
 	game_status_hbox.pack_start(game_stage_control_right_vbox, Gtk::PACK_SHRINK);
 	game_control_frame.add(game_status_hbox);
 
+    ball_placement_hbox.pack_start(ball_x_label, Gtk::PACK_EXPAND_WIDGET, 20);
+    ball_placement_hbox.pack_start(ball_x_spin, Gtk::PACK_EXPAND_WIDGET, 20);
+    ball_placement_hbox.pack_start(ball_y_label, Gtk::PACK_EXPAND_WIDGET, 20);
+    ball_placement_hbox.pack_start(ball_y_spin, Gtk::PACK_EXPAND_WIDGET, 20);
+
 	big_vbox.pack_start(menu_bar, Gtk::PACK_SHRINK);
 	big_vbox.pack_start(halt_stop_hbox, Gtk::PACK_SHRINK, 10);
 	big_vbox.pack_start(start_hbox, Gtk::PACK_SHRINK, 10);
 	big_vbox.pack_start(goal_frame, Gtk::PACK_EXPAND_WIDGET, 10);
 	big_vbox.pack_start(game_control_frame, Gtk::PACK_SHRINK, 10);
 	big_vbox.pack_start(team_hbox, Gtk::PACK_SHRINK, 10);
+    big_vbox.pack_start(ball_placement_hbox, Gtk::PACK_SHRINK, 10);
 
 	add(big_vbox);
 
